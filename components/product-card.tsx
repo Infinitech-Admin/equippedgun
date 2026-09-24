@@ -1,10 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/components/cart-provider";
-import { ShoppingCart, Info } from "lucide-react";
+import { ShoppingCart, Check } from "lucide-react";
 import Image from "next/image";
 import type { Product } from "@/types";
 
@@ -14,8 +15,12 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { dispatch } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
 
   const handleAddToCart = () => {
+    if (isAdding || justAdded) return;
+
     dispatch({
       type: "ADD_ITEM",
       payload: {
@@ -26,6 +31,14 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         category: product.category,
       },
     });
+
+    // trigger animation sequence
+    setIsAdding(true);
+    setTimeout(() => {
+      setIsAdding(false);
+      setJustAdded(true);
+      setTimeout(() => setJustAdded(false), 1200);
+    }, 150);
   };
 
   const getCategoryColor = (category: string) => {
@@ -42,7 +55,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-background border border-border hover:border-tactical-orange/50 hover:shadow-tactical-orange/20 w-64 sm:w-72 md:w-80 flex flex-col">
+    <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-background border border-border hover:border-tactical-orange/50 hover:shadow-tactical-orange/20 w-full max-w-[16rem] sm:max-w-[18rem] md:max-w-[20rem] shrink-0 flex flex-col">
       <CardContent className="p-3">
         <div className="h-40 relative mb-3 rounded-lg overflow-hidden">
           <Image
@@ -99,19 +112,26 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <Button
           onClick={handleAddToCart}
           disabled={!product.inStock}
-          className="flex-grow bg-tactical-orange hover:bg-tactical-orange/90 text-white font-semibold group-hover:scale-105 transition-all duration-200 shadow-md"
+          className={`flex-grow font-semibold shadow-md transition-all duration-200 ${
+            justAdded
+              ? "bg-green-600 hover:bg-green-600 text-white scale-105"
+              : "bg-tactical-orange hover:bg-tactical-orange/90 text-white group-hover:scale-105"
+          } ${isAdding ? "scale-90" : ""}`}
           size="sm"
         >
-          <ShoppingCart className="h-4 w-4 mr-2" />
-          Add to Cart
-        </Button>
-
-        <Button
-          variant="outline"
-          size="icon"
-          className="border-2 border-tactical-gold/50 hover:border-tactical-gold hover:bg-tactical-gold/20 hover:text-tactical-gold text-foreground font-semibold"
-        >
-          <Info className="h-4 w-4" />
+          {justAdded ? (
+            <>
+              <Check className="h-4 w-4 mr-2 animate-in zoom-in duration-200" />
+              Added!
+            </>
+          ) : (
+            <>
+              <ShoppingCart
+                className={`h-4 w-4 mr-2 ${isAdding ? "animate-bounce" : ""}`}
+              />
+              Add to Cart
+            </>
+          )}
         </Button>
       </CardFooter>
     </Card>
