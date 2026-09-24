@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { useCart, useCartValue } from "@/components/cart-provider"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { useCart, useCartValue } from "@/components/cart-provider";
 import {
   Minus,
   Plus,
@@ -12,31 +12,31 @@ import {
   ShoppingBag,
   ArrowLeft,
   ArrowRight,
-} from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export const CartPage = () => {
-  const { state, dispatch } = useCart()
-  const cartValue = useCartValue()
+  const { state, dispatch } = useCart();
+  const cartValue = useCartValue();
 
   const updateQuantity = (id: string, quantity: number) => {
-    dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } })
-  }
+    dispatch({ type: "UPDATE_QUANTITY", payload: { id, quantity } });
+  };
 
   const removeItem = (id: string) => {
-    dispatch({ type: "REMOVE_ITEM", payload: id })
-  }
+    dispatch({ type: "REMOVE_ITEM", payload: id });
+  };
 
   const clearCart = () => {
-    dispatch({ type: "CLEAR_CART" })
-  }
+    dispatch({ type: "CLEAR_CART" });
+  };
 
   // ✅ FIX: sum all item quantities (2 rifles + 3 ammo = 5 total)
   const totalQuantity = state.items.reduce(
     (total, item) => total + item.quantity,
-    0
-  )
+    0,
+  );
 
   if (state.items.length === 0) {
     return (
@@ -54,7 +54,7 @@ export const CartPage = () => {
           </Button>
         </Link>
       </div>
-    )
+    );
   }
 
   return (
@@ -84,10 +84,7 @@ export const CartPage = () => {
 
           <div className="space-y-4">
             {state.items.map((item) => (
-              <Card
-                key={item.id}
-                className="bg-card/50 backdrop-blur-sm"
-              >
+              <Card key={item.id} className="bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-4">
                     <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted">
@@ -107,7 +104,7 @@ export const CartPage = () => {
                         {item.category}
                       </Badge>
                       <p className="text-lg font-bold text-primary">
-                        ${item.price.toFixed(2)}
+                        ₱{item.price.toFixed(2)}
                       </p>
                     </div>
 
@@ -155,7 +152,7 @@ export const CartPage = () => {
                       Subtotal:
                     </span>
                     <span className="font-semibold">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ₱{(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 </CardContent>
@@ -175,7 +172,7 @@ export const CartPage = () => {
                 <div className="flex justify-between text-sm">
                   {/* ✅ Show total quantity here */}
                   <span>Items ({totalQuantity}):</span>
-                  <span>${cartValue.toFixed(2)}</span>
+                  <span>₱{cartValue.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping:</span>
@@ -195,9 +192,7 @@ export const CartPage = () => {
 
               <div className="flex justify-between font-semibold text-lg">
                 <span>Subtotal:</span>
-                <span className="text-primary">
-                  ${cartValue.toFixed(2)}
-                </span>
+                <span className="text-primary">₱{cartValue.toFixed(2)}</span>
               </div>
 
               <div className="space-y-3">
@@ -235,5 +230,5 @@ export const CartPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

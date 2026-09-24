@@ -1,35 +1,94 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { ShoppingCart, Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { useCart } from "@/components/cart-provider"
-import { useState } from "react"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import Image from "next/image";
+import { ShoppingCart, Menu, X, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/components/cart-provider";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+
+// Minimal shape of the event the browser fires when the app is installable.
+// Not in lib.dom.d.ts yet, so it's typed by hand here.
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
 
 export const Navbar = () => {
-  const { state } = useCart() // ✅ we only need the state
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const pathname = usePathname()
+  const { state } = useCart(); // ✅ we only need the state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   // ✅ Count distinct products, not total quantity
-  const cartCount = state.items.length
+  const cartCount = state.items.length;
+
+  // --- PWA install prompt state ---
+  const [installPrompt, setInstallPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    // Already running as an installed PWA (standalone / iOS)?
+    const standalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as unknown as { standalone?: boolean }).standalone ===
+        true;
+    setIsInstalled(standalone);
+
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e as BeforeInstallPromptEvent);
+      setIsInstallable(true);
+    };
+
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setIsInstallable(false);
+      setInstallPrompt(null);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
+      window.removeEventListener("appinstalled", handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === "accepted") {
+      setIsInstalled(true);
+    }
+    // The prompt can only be used once.
+    setInstallPrompt(null);
+    setIsInstallable(false);
+  };
+
+  const showInstallButton = isInstallable && !isInstalled;
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/shop", label: "Shop" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact Us" },
-  ]
+  ];
 
   const isActiveLink = (href: string) => {
     if (href === "/") {
-      return pathname === "/"
+      return pathname === "/";
     }
-    return pathname.startsWith(href)
-  }
+    return pathname.startsWith(href);
+  };
 
   return (
     <nav className="sticky top-0 z-40 w-full border-b border-orange-500/30 bg-slate-900/95 backdrop-blur supports-[backdrop-filter]:bg-slate-900/90">
@@ -38,14 +97,14 @@ export const Navbar = () => {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
             <Image
-              src="/images/logo.jpg"
+              src="/arcenalcore-logo.png"
               alt="Guns & Ammo Dealership"
               width={40}
               height={40}
               className="rounded-md group-hover:scale-105 transition-transform"
             />
             <span className="font-bold text-lg text-white">
-              EQUIPPED GUNS & <span className="text-orange-400">AMMO DEALERSHIP</span>
+              ArcenalCore <span className="text-orange-400"></span>
             </span>
           </Link>
 
@@ -56,21 +115,37 @@ export const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 className={`text-sm font-medium transition-colors relative group ${
-                  isActiveLink(link.href) ? "text-orange-400" : "text-white hover:text-orange-300"
+                  isActiveLink(link.href)
+                    ? "text-orange-400"
+                    : "text-white hover:text-orange-300"
                 }`}
               >
                 {link.label}
                 <span
                   className={`absolute -bottom-1 left-0 h-0.5 bg-orange-400 transition-all duration-300 ${
-                    isActiveLink(link.href) ? "w-full" : "w-0 group-hover:w-full"
+                    isActiveLink(link.href)
+                      ? "w-full"
+                      : "w-0 group-hover:w-full"
                   }`}
                 ></span>
               </Link>
             ))}
           </div>
 
-          {/* Cart and Mobile Menu */}
+          {/* Install App, Cart and Mobile Menu */}
           <div className="flex items-center space-x-2">
+            {showInstallButton && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleInstallClick}
+                className="hidden sm:flex items-center gap-1.5 bg-transparent border-orange-500 hover:border-orange-400 hover:bg-orange-500/20 text-white"
+              >
+                <Download className="h-4 w-4 text-orange-400" />
+                Install App
+              </Button>
+            )}
+
             <Link href="/cart">
               <Button
                 variant="outline"
@@ -93,7 +168,11 @@ export const Navbar = () => {
               className="md:hidden hover:bg-orange-500/20 hover:text-orange-400 text-white"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {isMobileMenuOpen ? (
+                <X className="h-4 w-4" />
+              ) : (
+                <Menu className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </div>
@@ -116,10 +195,25 @@ export const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
+
+              {showInstallButton && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    handleInstallClick();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center gap-1.5 mt-1 bg-transparent border-orange-500 hover:border-orange-400 hover:bg-orange-500/20 text-white"
+                >
+                  <Download className="h-4 w-4 text-orange-400" />
+                  Install App
+                </Button>
+              )}
             </div>
           </div>
         )}
       </div>
     </nav>
-  )
-}
+  );
+};

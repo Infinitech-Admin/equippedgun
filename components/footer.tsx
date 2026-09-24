@@ -1,5 +1,5 @@
-import { Shield, Phone, MapPin, Clock, Mail } from "lucide-react"
-import Link from "next/link"
+import { Shield, Phone, MapPin, Clock, Mail } from "lucide-react";
+import Link from "next/link";
 
 export const Footer = () => {
   return (
@@ -9,7 +9,7 @@ export const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="font-bold text-lg bg-gradient-to-r from-primary to-tactical-orange bg-clip-text text-transparent">
-              EQUIPPED GUNS & AMMO
+              ArsenalCore
             </h3>
             <p className="text-sm text-muted-foreground">
               Trusted firearms dealer in Makati, offering premium products with
@@ -64,19 +64,19 @@ export const Footer = () => {
               </Link>
 
               <a
-                href="tel:09603336009"
+                href="tel:09456754591"
                 className="flex items-center gap-2 hover:text-tactical-orange transition-colors"
               >
                 <Phone className="h-4 w-4 text-tactical-orange" />
-                <span>0960 333 6009</span>
+                <span>09456754591</span>
               </a>
 
               <a
-                href="mailto:equippedguns.ammo@gmail.com"
+                href="mailto:arcenalcore@gmail.com"
                 className="flex items-center gap-2 hover:text-tactical-orange transition-colors"
               >
                 <Mail className="h-4 w-4 text-tactical-red" />
-                <span>equippedguns.ammo@gmail.com</span>
+                <span>arcenalcore@gmail.com</span>
               </a>
 
               <div className="flex items-center gap-2">
@@ -91,15 +91,16 @@ export const Footer = () => {
             <h4 className="font-semibold text-tactical-gold">Legal Notice</h4>
             <p className="text-xs text-muted-foreground">
               All sales subject to Philippine firearms laws and regulations.
-              Valid ID and proper licensing are required for purchase and pick-up.
+              Valid ID and proper licensing are required for purchase and
+              pick-up.
             </p>
           </div>
         </div>
 
         <div className="border-t border-tactical-orange/20 mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 Equipped Guns & Ammo. All rights reserved.</p>
+          <p>&copy; 2024 ArcenalCore. All rights reserved.</p>
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};

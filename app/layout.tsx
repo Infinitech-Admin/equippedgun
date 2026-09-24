@@ -1,55 +1,73 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"  // Use Google Fonts as a fallback
-import { Roboto_Mono } from "next/font/google"  // Adding Google Mono Font
-import { Analytics } from "@vercel/analytics/next"
-import "./globals.css"
-import { CartProvider } from "@/components/cart-provider"
-import { CustomCursor } from "@/components/cursor"
-import { Suspense } from "react"
+import type React from "react";
+import type { Metadata, Viewport } from "next";
+import { Inter, Roboto_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+import { CartProvider } from "@/components/cart-provider";
+import { CustomCursor } from "@/components/cursor";
+import { SocialShareBar } from "@/components/social-share-bar";
+import { ChatWidgetButton } from "@/components/chat-widget";
+import { Suspense } from "react";
 
-// Load Google Fonts using Next.js Font Optimization
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans", // Variable for Inter font
-})
+  variable: "--font-sans",
+});
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
-  variable: "--font-mono", // Variable for Roboto Mono font
-})
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
-  title: "Guns & Ammo Dealership - Professional Firearms & Ammunition",
-  description: "Professional firearms and ammunition dealership. Pick-up only. Comply with local laws.",
-  keywords: [
-    "guns", "ammo", "firearms", "licensed FFL dealer", "handguns", "pistols", "revolvers",
-    "rifles", "assault rifles", "shotguns", "hunting rifles", "tactical weapons", "firearm accessories",
-    "gun store", "gun shop", "ammunition", "ammo supplies", "optics", "scopes", "gun sights", 
-    "firearm safety", "gun holsters", "gun magazines", "gun cases", "tactical gear", "security equipment",
-    "law enforcement firearms", "military surplus guns", "defense weapons", "home protection",
-    "concealed carry", "open carry", "gun license", "gun permits", "shooting range supplies", 
-    "gun cleaning kits", "hunting gear", "survival gear", "long-range rifles", "precision shooting",
-    "self-defense weapons", "gun sales", "FFL firearms dealer", "professional gun dealer", "firearm training"
-  ],
+  title: "ArcenalCore - Professional Firearms & Ammunition",
+  description:
+    "Professional firearms and ammunition dealership. Pick-up only. Comply with local laws.",
+  applicationName: "ArcenalCore",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "ArcenalCore",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/icon-152x152.png", sizes: "152x152", type: "image/png" },
+    ],
+  },
+  openGraph: {
+    title: "ArcenalCore - Professional Firearms & Ammunition",
+    description:
+      "Professional firearms and ammunition dealership. Pick-up only. Comply with local laws.",
+    images: ["/path-to-image.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@your_twitter_handle",
+  },
+  robots: { index: true, follow: true },
   generator: "v0.app",
-}
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <head>
-        <meta name="robots" content="index, follow" />
-        <meta property="og:title" content="Guns & Ammo Dealership - Professional Firearms & Ammunition" />
-        <meta property="og:description" content="Professional firearms and ammunition dealership. Pick-up only. Comply with local laws." />
-        <meta property="og:image" content="/path-to-image.jpg" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:creator" content="@your_twitter_handle" />
-      </head>
       <body
         className={`font-sans ${inter.variable} ${robotoMono.variable} custom-cursor`}
       >
@@ -57,10 +75,12 @@ export default function RootLayout({
           <CartProvider>
             <CustomCursor />
             {children}
+            <SocialShareBar />
+            <ChatWidgetButton />
           </CartProvider>
         </Suspense>
         <Analytics />
       </body>
     </html>
-  )
+  );
 }
