@@ -4,7 +4,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { CartProvider } from "@/components/cart-provider";
-import { CustomCursor } from "@/components/cursor";
+// import { CustomCursor } from "@/components/cursor";
 import { SocialShareBar } from "@/components/social-share-bar";
 import { ChatWidgetButton } from "@/components/chat-widget";
 import { Suspense } from "react";
@@ -73,7 +73,6 @@ export default function RootLayout({
       >
         <Suspense fallback={null}>
           <CartProvider>
-            <CustomCursor />
             {children}
             <SocialShareBar />
             <ChatWidgetButton />
