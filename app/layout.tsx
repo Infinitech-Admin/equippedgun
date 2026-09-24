@@ -4,7 +4,6 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { CartProvider } from "@/components/cart-provider";
-// import { CustomCursor } from "@/components/cursor";
 import { SocialShareBar } from "@/components/social-share-bar";
 import { ChatWidgetButton } from "@/components/chat-widget";
 import { Suspense } from "react";
@@ -68,9 +67,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`font-sans ${inter.variable} ${robotoMono.variable} custom-cursor`}
-      >
+      <body className={`font-sans ${inter.variable} ${robotoMono.variable}`}>
         <Suspense fallback={null}>
           <CartProvider>
             {children}

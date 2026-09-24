@@ -138,27 +138,6 @@
   }
 }
 
-/* Custom cursor styles for rifle sight */
-.custom-cursor {
-  cursor: none;
-}
-
-.custom-cursor * {
-  cursor: none !important;
-}
-
-.custom-cursor input,
-.custom-cursor textarea,
-.custom-cursor [contenteditable] {
-  cursor: text !important;
-}
-
-.custom-cursor button,
-.custom-cursor a,
-.custom-cursor [role="button"] {
-  cursor: none !important;
-}
-
 /* Added tactical color utility classes */
 .text-tactical-orange {
   color: var(--tactical-orange);
@@ -186,22 +165,4 @@
 
 .border-tactical-orange {
   border-color: var(--tactical-orange);
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .custom-cursor {
-    cursor: auto;
-  }
-  .custom-cursor * {
-    cursor: auto !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .custom-cursor {
-    cursor: auto;
-  }
-  .custom-cursor * {
-    cursor: auto !important;
-  }
 }
