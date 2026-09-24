@@ -32,7 +32,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       },
     });
 
-    // trigger animation sequence
     setIsAdding(true);
     setTimeout(() => {
       setIsAdding(false);
@@ -55,9 +54,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-background border border-border hover:border-tactical-orange/50 hover:shadow-tactical-orange/20 w-full max-w-[16rem] sm:max-w-[18rem] md:max-w-[20rem] shrink-0 flex flex-col">
-      <CardContent className="p-3">
-        <div className="h-40 relative mb-3 rounded-lg overflow-hidden">
+    <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-background border border-border hover:border-tactical-orange/50 hover:shadow-tactical-orange/20 w-full h-full flex flex-col">
+      <CardContent className="p-3 flex flex-col flex-1">
+        <div className="h-40 relative mb-3 rounded-lg overflow-hidden shrink-0">
           <Image
             src={product.image || "/placeholder.svg"}
             alt={product.name}
@@ -76,7 +75,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 flex flex-col flex-1">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-bold text-sm leading-tight line-clamp-2 text-foreground group-hover:text-tactical-orange transition-colors">
               {product.name}
@@ -95,7 +94,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             {product.description}
           </p>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-auto pt-1">
             <span className="text-lg font-bold text-foreground">
               ₱{product.price.toFixed(2)}
             </span>
@@ -108,7 +107,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </div>
       </CardContent>
 
-      <CardFooter className="p-3 flex items-center justify-between gap-2">
+      <CardFooter className="p-3 flex items-center justify-between gap-2 mt-auto">
         <Button
           onClick={handleAddToCart}
           disabled={!product.inStock}
